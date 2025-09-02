@@ -49,48 +49,50 @@ export const DelayedResultsLoader: React.FC<DelayedResultsLoaderProps> = ({
   const fetchGoogleSheetData = async () => {
     setIsLoading(true);
     try {
-      console.log('Fetching from Google Sheets with formData:', formData);
-      
+      console.log("Fetching from Google Sheets with formData:", formData);
+
       // Fetch directly from Google Sheets using gviz API
-      const sheetUrl = 'https://docs.google.com/spreadsheets/d/19JeOWJL2oqyyrGjKn5bZodkaiNup8rDkKxdOEa2r4u8/gviz/tq?sheet=Client_Data';
-      
+      const sheetUrl =
+        "https://docs.google.com/spreadsheets/d/19JeOWJL2oqyyrGjKn5bZodkaiNup8rDkKxdOEa2r4u8/gviz/tq?sheet=Client_Data";
+
       const response = await fetch(sheetUrl);
       if (!response.ok) {
-        throw new Error(`Google Sheets request failed with status: ${response.status}`);
+        throw new Error(
+          `Google Sheets request failed with status: ${response.status}`
+        );
       }
 
       const textData = await response.text();
-      
+
       // Parse gviz response (it's wrapped in a function call)
-      const jsonStart = textData.indexOf('(') + 1;
-      const jsonEnd = textData.lastIndexOf(')');
+      const jsonStart = textData.indexOf("(") + 1;
+      const jsonEnd = textData.lastIndexOf(")");
       const jsonStr = textData.substring(jsonStart, jsonEnd);
       const gvizData = JSON.parse(jsonStr);
-      
+
       // Extract and map data to Prospect format
       const rows = gvizData.table.rows || [];
       const allProspects: Prospect[] = rows.map((row: any) => ({
-        Name: row.c[0]?.v || '',
-        Title: row.c[1]?.v || '',
-        Linked_url: row.c[2]?.v || '',
-        About: row.c[3]?.v || '',
-        Image: row.c[4]?.v || ''
+        Name: row.c[0]?.v || "",
+        Title: row.c[1]?.v || "",
+        Linked_url: row.c[2]?.v || "",
+        About: row.c[3]?.v || "",
+        Image: row.c[4]?.v || "",
       }));
 
       // Apply startIndex slicing (convert 1-based to 0-based for array slicing)
       const startIndex = Number(formData.startIndex) || 0;
-      const slicedProspects = allProspects.slice(startIndex, startIndex + 10);
-      
-      setProspects(slicedProspects);
+      setProspects(allProspects);
       toast({
         title: "Success!",
-        description: `Found ${slicedProspects.length} prospects matching your criteria.`,
+        description: `Found ${allProspects.length} prospects matching your criteria.`,
       });
     } catch (error) {
       console.error("Failed to fetch prospect data:", error);
       toast({
         title: "Error",
-        description: "Failed to fetch data from Google Sheets. Please check if the sheet is publicly accessible.",
+        description:
+          "Failed to fetch data from Google Sheets. Please check if the sheet is publicly accessible.",
         variant: "destructive",
       });
       setProspects([]);
