@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LinkedIn Outreach SaaS Design System */
+
+@layer base {
+  :root {
+    /* Base colors - Professional LinkedIn-inspired palette */
+    --background: 220 25% 6%;
+    --foreground: 210 20% 95%;
+
+    --card: 220 20% 8%;
+    --card-foreground: 210 20% 95%;
+
+    --popover: 220 20% 8%;
+    --popover-foreground: 210 20% 95%;
+
+    /* Brand colors - LinkedIn professional blue with modern twist */
+    --primary: 217 91% 60%;
+    --primary-foreground: 220 25% 6%;
+    --primary-glow: 217 91% 70%;
+
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 20% 95%;
+
+    --muted: 220 15% 12%;
+    --muted-foreground: 215 15% 65%;
+
+    --accent: 33 100% 60%;
+    --accent-foreground: 220 25% 6%;
+    --accent-glow: 33 100% 70%;
+
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 210 20% 95%;
+
+    --border: 220 15% 18%;
+    --input: 220 15% 12%;
+    --ring: 217 91% 60%;
+
+    --radius: 0.75rem;
+
+    /* Premium gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217 91% 60%), hsl(217 91% 70%));
+    --gradient-secondary: linear-gradient(135deg, hsl(33 100% 60%), hsl(33 100% 70%));
+    --gradient-hero: linear-gradient(135deg, hsl(220 25% 6%) 0%, hsl(217 32% 15%) 50%, hsl(217 91% 20%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(220 20% 8%) 0%, hsl(220 15% 12%) 100%);
+    
+    /* Animated background gradients */
+    --gradient-bg-1: linear-gradient(45deg, hsl(217 91% 60% / 0.1), hsl(33 100% 60% / 0.1));
+    --gradient-bg-2: linear-gradient(225deg, hsl(33 100% 60% / 0.1), hsl(217 91% 60% / 0.1));
+    
+    /* Shadows with brand colors */
+    --shadow-primary: 0 10px 40px -10px hsl(217 91% 60% / 0.3);
+    --shadow-accent: 0 10px 40px -10px hsl(33 100% 60% / 0.3);
+    --shadow-card: 0 4px 20px -4px hsl(220 25% 6% / 0.4);
+    --shadow-glow: 0 0 40px hsl(217 91% 60% / 0.4);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --sidebar-background: 220 15% 12%;
+    --sidebar-foreground: 210 20% 95%;
+    --sidebar-primary: 217 91% 60%;
+    --sidebar-primary-foreground: 220 25% 6%;
+    --sidebar-accent: 220 15% 15%;
+    --sidebar-accent-foreground: 210 20% 95%;
+    --sidebar-border: 220 15% 18%;
+    --sidebar-ring: 217 91% 60%;
+  }
+  
+  .dark {
+    /* Same values as root for consistent dark theme */
+    --background: 220 25% 6%;
+    --foreground: 210 20% 95%;
+    --card: 220 20% 8%;
+    --card-foreground: 210 20% 95%;
+    --popover: 220 20% 8%;
+    --popover-foreground: 210 20% 95%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 220 25% 6%;
+    --secondary: 220 15% 15%;
+    --secondary-foreground: 210 20% 95%;
+    --muted: 220 15% 12%;
+    --muted-foreground: 215 15% 65%;
+    --accent: 33 100% 60%;
+    --accent-foreground: 220 25% 6%;
+    --destructive: 0 75% 60%;
+    --destructive-foreground: 210 20% 95%;
+    --border: 220 15% 18%;
+    --input: 220 15% 12%;
+    --ring: 217 91% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans;
+    background: var(--gradient-hero);
+    background-attachment: fixed;
+  }
+}
+
+/* Custom utility classes for the design system */
+@layer utilities {
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+  
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+  }
+  
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+  
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+  
+  .shadow-primary {
+    box-shadow: var(--shadow-primary);
+  }
+  
+  .shadow-accent {
+    box-shadow: var(--shadow-accent);
+  }
+  
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+  
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  
+  .transition-smooth {
+    transition: var(--transition-smooth);
+  }
+  
+  .transition-bounce {
+    transition: var(--transition-bounce);
+  }
+}
+
+/* Background animation keyframes */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-10px) rotate(2deg); }
+  66% { transform: translateY(5px) rotate(-1deg); }
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* Animated background elements */
+.floating-element {
+  animation: float 6s ease-in-out infinite;
+}
+
+.gradient-animated {
+  background-size: 200% 200%;
+  animation: gradient-shift 8s ease infinite;
+}
+
+.glow-pulse {
+  animation: pulse-glow 3s ease-in-out infinite;
+}
