@@ -72,7 +72,6 @@ const Outreach = () => {
       // Send as JSON
       await fetch(webhookUrl, {
         method: "POST",
-        mode: "no-cors", // Add this line to bypass CORS preflight
         headers: {
           "Content-Type": "application/json",
         },
