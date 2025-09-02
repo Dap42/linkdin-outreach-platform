@@ -69,15 +69,14 @@ const Outreach = () => {
         startIndex: String(startIndexToSend),
       };
 
-      // Send as FormData (n8n form trigger expects this format)
-      const submissionData = new FormData();
-      Object.entries(payload).forEach(([key, value]) => {
-        submissionData.append(key, value);
-      });
-
+      // Send as JSON
       await fetch(webhookUrl, {
         method: "POST",
-        body: submissionData,
+        mode: "no-cors", // Add this line to bypass CORS preflight
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
       });
 
       toast({
