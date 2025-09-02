@@ -49,6 +49,8 @@ export const DelayedResultsLoader: React.FC<DelayedResultsLoaderProps> = ({
   const fetchGoogleSheetData = async () => {
     setIsLoading(true);
     try {
+      console.log('Fetching from Google Sheets with formData:', formData);
+      
       // Fetch directly from Google Sheets using gviz API
       const sheetUrl = 'https://docs.google.com/spreadsheets/d/19JeOWJL2oqyyrGjKn5bZodkaiNup8rDkKxdOEa2r4u8/gviz/tq?sheet=Client_Data';
       

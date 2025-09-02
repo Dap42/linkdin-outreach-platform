@@ -9,7 +9,10 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  // Check localStorage on initialization to persist login
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem("authToken") !== null;
+  });
 
   const login = (token: string) => {
     // In a real app, you'd store the token and validate it
