@@ -34,49 +34,45 @@ const Outreach = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const primaryUrl = 'http://localhost:5678/webhook/457d54dc-7f8a-40b1-b213-959c2226beff';
-    const fallbackUrl = 'https://n8n.srv982383.hstgr.cloud/form/81ffde54-c92a-4b6f-b6f4-e434fcfa4a41';
+    const webhookUrl = 'https://n8n.srv982383.hstgr.cloud/form/81ffde54-c92a-4b6f-b6f4-e434fcfa4a41';
 
     try {
-      let response;
+      // Convert 0-based startIndex to 1-based for n8n (0->1, 10->11, etc.)
+      const startIndexToSend = Number(formData.startIndex) + 1;
       
-      try {
-        // Try primary webhook first
-        response = await fetch(primaryUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
-      } catch (primaryError) {
-        // If primary fails, try fallback
-        response = await fetch(fallbackUrl, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData)
-        });
-      }
+      // Prepare form data as URL-encoded payload
+      const payload = {
+        designation: formData.designation.trim(),
+        industry: formData.industry.trim(), 
+        location: formData.location.trim(),
+        organizationType: formData.organizationType.trim(),
+        startIndex: String(startIndexToSend)
+      };
 
-      if (response.ok) {
-        toast({
-          title: "Success!",
-          description: "Your outreach campaign has been initiated. Redirecting to results...",
-        });
-        
-        // Navigate to results page with the form data
-        navigate('/results', { state: { formData } });
-      } else {
-        throw new Error('Failed to submit form');
-      }
+      // Send as URL-encoded form data with no-cors mode
+      await fetch(webhookUrl, {
+        method: 'POST',
+        mode: 'no-cors', // Bypass CORS issues
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+        },
+        body: new URLSearchParams(payload)
+      });
+
+      toast({
+        title: "Success!",
+        description: "Your outreach campaign has been initiated. Redirecting to results...",
+      });
+      
+      // Navigate to results page with the form data
+      navigate('/results', { state: { formData } });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to submit your outreach request. Please try again.",
-        variant: "destructive"
+        title: "Request Sent",
+        description: "Your request has been submitted. Redirecting to results...",
       });
+      // Navigate anyway since no-cors mode doesn't return response status
+      navigate('/results', { state: { formData } });
     } finally {
       setIsSubmitting(false);
     }

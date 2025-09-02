@@ -49,33 +49,49 @@ export const DelayedResultsLoader: React.FC<DelayedResultsLoaderProps> = ({
   const fetchGoogleSheetData = async () => {
     setIsLoading(true);
     try {
-      const queryParams = new URLSearchParams(formData).toString();
-      console.log("Fetching prospects with params:", queryParams);
+      // Fetch directly from Google Sheets using gviz API
+      const sheetUrl = 'https://docs.google.com/spreadsheets/d/19JeOWJL2oqyyrGjKn5bZodkaiNup8rDkKxdOEa2r4u8/gviz/tq?sheet=Client_Data';
       
-      const response = await fetch(
-        `http://localhost:3001/api/prospects?${queryParams}`
-      );
-
+      const response = await fetch(sheetUrl);
       if (!response.ok) {
-        throw new Error(`API request failed with status: ${response.status}`);
+        throw new Error(`Google Sheets request failed with status: ${response.status}`);
       }
 
-      const data: Prospect[] = await response.json();
-      console.log("Received prospects data:", data);
+      const textData = await response.text();
       
-      setProspects(data);
+      // Parse gviz response (it's wrapped in a function call)
+      const jsonStart = textData.indexOf('(') + 1;
+      const jsonEnd = textData.lastIndexOf(')');
+      const jsonStr = textData.substring(jsonStart, jsonEnd);
+      const gvizData = JSON.parse(jsonStr);
+      
+      // Extract and map data to Prospect format
+      const rows = gvizData.table.rows || [];
+      const allProspects: Prospect[] = rows.map((row: any) => ({
+        Name: row.c[0]?.v || '',
+        Title: row.c[1]?.v || '',
+        Linked_url: row.c[2]?.v || '',
+        About: row.c[3]?.v || '',
+        Image: row.c[4]?.v || ''
+      }));
+
+      // Apply startIndex slicing (convert 1-based to 0-based for array slicing)
+      const startIndex = Number(formData.startIndex) || 0;
+      const slicedProspects = allProspects.slice(startIndex, startIndex + 10);
+      
+      setProspects(slicedProspects);
       toast({
         title: "Success!",
-        description: `Found ${data.length} prospects matching your criteria.`,
+        description: `Found ${slicedProspects.length} prospects matching your criteria.`,
       });
     } catch (error) {
       console.error("Failed to fetch prospect data:", error);
       toast({
         title: "Error",
-        description: "Failed to connect to backend server. Make sure the server is running on port 3001.",
+        description: "Failed to fetch data from Google Sheets. Please check if the sheet is publicly accessible.",
         variant: "destructive",
       });
-      // Don't set prospects to empty array, keep loading state
+      setProspects([]);
     } finally {
       setIsLoading(false);
     }
