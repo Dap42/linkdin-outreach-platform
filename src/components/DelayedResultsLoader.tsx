@@ -3,6 +3,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2, Target, Users, Zap } from "lucide-react"; // Added Target, Users, Zap
 import { Card, CardContent } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion"; // Import motion and AnimatePresence for animations
+import { useAuth } from "../context/AuthContext";
 
 interface Prospect {
   Name: string;
@@ -26,6 +27,7 @@ export const DelayedResultsLoader: React.FC<DelayedResultsLoaderProps> = ({
   children,
 }) => {
   const { toast } = useToast();
+  const { user } = useAuth();
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentFactIndex, setCurrentFactIndex] = useState(0);
@@ -51,9 +53,10 @@ export const DelayedResultsLoader: React.FC<DelayedResultsLoaderProps> = ({
     try {
       console.log("Fetching from Google Sheets with formData:", formData);
 
-      // Fetch directly from Google Sheets using gviz API
+      // Fetch directly from Google Sheets using gviz API with user-specific sheet
+      const sheetName = user?.sheetName || "Client_Data";
       const sheetUrl =
-        "https://docs.google.com/spreadsheets/d/19JeOWJL2oqyyrGjKn5bZodkaiNup8rDkKxdOEa2r4u8/gviz/tq?sheet=Client_Data";
+        `https://docs.google.com/spreadsheets/d/19JeOWJL2oqyyrGjKn5bZodkaiNup8rDkKxdOEa2r4u8/gviz/tq?sheet=${sheetName}`;
 
       const response = await fetch(sheetUrl);
       if (!response.ok) {

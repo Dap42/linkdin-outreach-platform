@@ -1,8 +1,15 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
+interface User {
+  email: string;
+  webhookUrl: string;
+  sheetName: string;
+}
+
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (token: string) => void;
+  user: User | null;
+  login: (user: User) => void;
   logout: () => void;
 }
 
@@ -11,22 +18,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Check localStorage on initialization to persist login
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return localStorage.getItem("authToken") !== null;
+    return localStorage.getItem("user") !== null;
   });
 
-  const login = (token: string) => {
-    // In a real app, you'd store the token and validate it
-    localStorage.setItem("authToken", token);
+  const [user, setUser] = useState<User | null>(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
+
+  const login = (userData: User) => {
+    localStorage.setItem("user", JSON.stringify(userData));
+    setUser(userData);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
+    setUser(null);
     setIsAuthenticated(false);
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

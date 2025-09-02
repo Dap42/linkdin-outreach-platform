@@ -21,14 +21,55 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useAuth();
 
+  // Hardcoded demo credentials
+  const credentials = [
+    {
+      email: "anoops@analytx4t.com",
+      password: "1234567890",
+      webhookUrl: "https://n8n.srv982383.hstgr.cloud/webhook/3c7ae4bd-ae76-4f27-a024-56db25ad31df",
+      sheetName: "Anoop"
+    },
+    {
+      email: "analytx4tlab@gmail.com",
+      password: "1234567890",
+      webhookUrl: "https://n8n.srv982383.hstgr.cloud/webhook/db65919b-629d-42fa-9441-b2112f040ab3",
+      sheetName: "Testers"
+    },
+    {
+      email: "saurabh@allabovedesignstudio.com",
+      password: "1234567890",
+      webhookUrl: "https://n8n.srv982383.hstgr.cloud/webhook/457d54dc-7f8a-40b1-b213-959c2226beff",
+      sheetName: "Saurabh_Client"
+    },
+    {
+      email: "kkguruamit@gmail.com",
+      password: "1234567890",
+      webhookUrl: "https://n8n.srv982383.hstgr.cloud/webhook/10c8282b-3379-4953-95da-bde8a6e076e9",
+      sheetName: "Amit"
+    }
+  ];
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here (e.g., validate credentials)
-    // For now, we'll simulate a successful login
-    const dummyToken = "fake-jwt-token"; // Replace with actual token
-    login(dummyToken);
-    navigate("/"); // Redirect to home page after login
-    console.log("Login form submitted");
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    // Find matching credentials
+    const user = credentials.find(
+      cred => cred.email === email && cred.password === password
+    );
+
+    if (user) {
+      login({
+        email: user.email,
+        webhookUrl: user.webhookUrl,
+        sheetName: user.sheetName
+      });
+      navigate("/outreach");
+    } else {
+      alert("Invalid credentials. Please try again.");
+    }
   };
 
   return (
@@ -67,6 +108,7 @@ const Login = () => {
                   </Label>
                   <Input
                     id="email"
+                    name="email"
                     type="email"
                     placeholder="enter your email"
                     className="bg-input border-border focus:ring-primary"
@@ -84,6 +126,7 @@ const Login = () => {
                   </Label>
                   <Input
                     id="password"
+                    name="password"
                     type="password"
                     placeholder="enter your password"
                     className="bg-input border-border focus:ring-primary"

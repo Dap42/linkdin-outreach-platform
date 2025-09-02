@@ -29,10 +29,12 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "../context/AuthContext";
 
 const Outreach = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     designation: "",
@@ -53,8 +55,7 @@ const Outreach = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const webhookUrl =
-      "https://n8n.srv982383.hstgr.cloud/webhook/457d54dc-7f8a-40b1-b213-959c2226beff";
+    const webhookUrl = user?.webhookUrl || "";
 
     try {
       // Convert 0-based startIndex to 1-based for n8n (0->1, 10->11, etc.)
