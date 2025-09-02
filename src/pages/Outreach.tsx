@@ -2,13 +2,32 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Navbar } from "@/components/ui/navbar";
-import { Target, Send, Users, MapPin, Building, ArrowRight } from "lucide-react";
+import {
+  Target,
+  Send,
+  Users,
+  MapPin,
+  Building,
+  ArrowRight,
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Outreach = () => {
@@ -20,13 +39,13 @@ const Outreach = () => {
     industry: "",
     location: "",
     organizationType: "",
-    startIndex: "0"
+    startIndex: "0",
   });
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
   };
 
@@ -34,46 +53,47 @@ const Outreach = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    const webhookUrl = 'https://n8n.srv982383.hstgr.cloud/form/81ffde54-c92a-4b6f-b6f4-e434fcfa4a41';
+    const webhookUrl =
+      "https://n8n.srv982383.hstgr.cloud/form/81ffde54-c92a-4b6f-b6f4-e434fcfa4a41";
 
     try {
       // Convert 0-based startIndex to 1-based for n8n (0->1, 10->11, etc.)
       const startIndexToSend = Number(formData.startIndex) + 1;
-      
+
       // Prepare form data as URL-encoded payload
       const payload = {
         designation: formData.designation.trim(),
-        industry: formData.industry.trim(), 
+        industry: formData.industry.trim(),
         location: formData.location.trim(),
         organizationType: formData.organizationType.trim(),
-        startIndex: String(startIndexToSend)
+        startIndex: String(startIndexToSend),
       };
 
-      // Send as FormData (n8n form trigger expects this format)
-      const submissionData = new FormData();
-      Object.entries(payload).forEach(([key, value]) => {
-        submissionData.append(key, value);
-      });
-
+      // Send as JSON
       await fetch(webhookUrl, {
-        method: 'POST',
-        body: submissionData
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Set Content-Type to application/json
+        },
+        body: JSON.stringify(payload), // Stringify the payload
       });
 
       toast({
         title: "Success!",
-        description: "Your outreach campaign has been initiated. Redirecting to results...",
+        description:
+          "Your outreach campaign has been initiated. Redirecting to results...",
       });
-      
+
       // Navigate to results page with the form data
-      navigate('/results', { state: { formData } });
+      navigate("/results", { state: { formData } });
     } catch (error) {
       toast({
         title: "Request Sent",
-        description: "Your request has been submitted. Redirecting to results...",
+        description:
+          "Your request has been submitted. Redirecting to results...",
       });
       // Navigate anyway since no-cors mode doesn't return response status
-      navigate('/results', { state: { formData } });
+      navigate("/results", { state: { formData } });
     } finally {
       setIsSubmitting(false);
     }
@@ -84,13 +104,13 @@ const Outreach = () => {
     { label: "Show 11–20", value: "10" },
     { label: "Show 21–30", value: "20" },
     { label: "Show 31–40", value: "30" },
-    { label: "Show 41–50", value: "40" }
+    { label: "Show 41–50", value: "40" },
   ];
 
   return (
     <AnimatedBackground>
       <Navbar />
-      
+
       <div className="min-h-screen px-6 pt-28 pb-12">
         <div className="container mx-auto max-w-4xl">
           <motion.div
@@ -105,14 +125,11 @@ const Outreach = () => {
               </div>
             </div>
             <h1 className="text-4xl lg:text-5xl font-bold mb-4">
-              AI LinkedIn{" "}
-              <span className="gradient-text">
-                Outreach
-              </span>
+              AI LinkedIn <span className="gradient-text">Outreach</span>
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Define your target audience and let our AI find the perfect prospects 
-              for your LinkedIn outreach campaign.
+              Define your target audience and let our AI find the perfect
+              prospects for your LinkedIn outreach campaign.
             </p>
           </motion.div>
 
@@ -128,15 +145,19 @@ const Outreach = () => {
                   <span>Target Audience</span>
                 </CardTitle>
                 <CardDescription>
-                  Specify your ideal prospect criteria to generate targeted leads
+                  Specify your ideal prospect criteria to generate targeted
+                  leads
                 </CardDescription>
               </CardHeader>
-              
+
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="designation" className="flex items-center space-x-2">
+                      <Label
+                        htmlFor="designation"
+                        className="flex items-center space-x-2"
+                      >
                         <Target className="h-4 w-4" />
                         <span>Job Title / Designation</span>
                       </Label>
@@ -146,13 +167,18 @@ const Outreach = () => {
                         placeholder="e.g., CEO, Marketing Manager, Software Engineer"
                         className="bg-input border-border focus:ring-primary"
                         value={formData.designation}
-                        onChange={(e) => handleInputChange("designation", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("designation", e.target.value)
+                        }
                         required
                       />
                     </div>
-                    
+
                     <div className="space-y-2">
-                      <Label htmlFor="industry" className="flex items-center space-x-2">
+                      <Label
+                        htmlFor="industry"
+                        className="flex items-center space-x-2"
+                      >
                         <Building className="h-4 w-4" />
                         <span>Industry</span>
                       </Label>
@@ -162,15 +188,20 @@ const Outreach = () => {
                         placeholder="e.g., Technology, Healthcare, Finance"
                         className="bg-input border-border focus:ring-primary"
                         value={formData.industry}
-                        onChange={(e) => handleInputChange("industry", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("industry", e.target.value)
+                        }
                         required
                       />
                     </div>
                   </div>
-                  
+
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
-                      <Label htmlFor="location" className="flex items-center space-x-2">
+                      <Label
+                        htmlFor="location"
+                        className="flex items-center space-x-2"
+                      >
                         <MapPin className="h-4 w-4" />
                         <span>Location</span>
                       </Label>
@@ -180,13 +211,18 @@ const Outreach = () => {
                         placeholder="e.g., San Francisco, New York, Remote"
                         className="bg-input border-border focus:ring-primary"
                         value={formData.location}
-                        onChange={(e) => handleInputChange("location", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("location", e.target.value)
+                        }
                         required
                       />
                     </div>
-                    
+
                     <div className="space-y-2">
-                      <Label htmlFor="organizationType" className="flex items-center space-x-2">
+                      <Label
+                        htmlFor="organizationType"
+                        className="flex items-center space-x-2"
+                      >
                         <Building className="h-4 w-4" />
                         <span>Organization Type</span>
                       </Label>
@@ -196,20 +232,27 @@ const Outreach = () => {
                         placeholder="e.g., Startup, Enterprise, Non-profit"
                         className="bg-input border-border focus:ring-primary"
                         value={formData.organizationType}
-                        onChange={(e) => handleInputChange("organizationType", e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("organizationType", e.target.value)
+                        }
                         required
                       />
                     </div>
                   </div>
-                  
+
                   <div className="space-y-2">
-                    <Label htmlFor="startIndex" className="flex items-center space-x-2">
+                    <Label
+                      htmlFor="startIndex"
+                      className="flex items-center space-x-2"
+                    >
                       <Users className="h-4 w-4" />
                       <span>Results Range</span>
                     </Label>
-                    <Select 
-                      value={formData.startIndex} 
-                      onValueChange={(value) => handleInputChange("startIndex", value)}
+                    <Select
+                      value={formData.startIndex}
+                      onValueChange={(value) =>
+                        handleInputChange("startIndex", value)
+                      }
                     >
                       <SelectTrigger className="bg-input border-border focus:ring-primary">
                         <SelectValue placeholder="Select results range" />
@@ -223,9 +266,9 @@ const Outreach = () => {
                       </SelectContent>
                     </Select>
                   </div>
-                  
-                  <Button 
-                    type="submit" 
+
+                  <Button
+                    type="submit"
                     disabled={isSubmitting}
                     className="w-full gradient-primary shadow-primary hover:shadow-glow transition-smooth"
                     size="lg"
@@ -273,7 +316,8 @@ const Outreach = () => {
                     </div>
                     <h3 className="font-semibold mb-2">Quality Leads</h3>
                     <p className="text-sm text-muted-foreground">
-                      Get verified profiles with complete professional information
+                      Get verified profiles with complete professional
+                      information
                     </p>
                   </div>
                   <div>
