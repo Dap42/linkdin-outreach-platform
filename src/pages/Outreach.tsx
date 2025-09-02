@@ -54,7 +54,7 @@ const Outreach = () => {
     setIsSubmitting(true);
 
     const webhookUrl =
-      "https://n8n.srv982383.hstgr.cloud/form/81ffde54-c92a-4b6f-b6f4-e434fcfa4a41";
+      "https://n8n.srv982383.hstgr.cloud/webhook/457d54dc-7f8a-40b1-b213-959c2226beff";
 
     try {
       // Convert 0-based startIndex to 1-based for n8n (0->1, 10->11, etc.)
