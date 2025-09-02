@@ -82,10 +82,11 @@ export const DelayedResultsLoader: React.FC<DelayedResultsLoaderProps> = ({
 
       // Apply startIndex slicing (convert 1-based to 0-based for array slicing)
       const startIndex = Number(formData.startIndex) || 0;
-      setProspects(allProspects);
+      const prospectsWithoutHeader = allProspects.slice(1); // Slice to remove the first row (header)
+      setProspects(prospectsWithoutHeader);
       toast({
         title: "Success!",
-        description: `Found ${allProspects.length} prospects matching your criteria.`,
+        description: `Found ${prospectsWithoutHeader.length} prospects matching your criteria.`,
       });
     } catch (error) {
       console.error("Failed to fetch prospect data:", error);
