@@ -18,6 +18,19 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Check, ChevronsUpDown } from "lucide-react";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Navbar } from "@/components/ui/navbar";
 import {
@@ -42,6 +55,12 @@ const Outreach = () => {
     location: "",
     organizationType: "",
     startIndex: "0",
+  });
+  const [openPopovers, setOpenPopovers] = useState({
+    designation: false,
+    industry: false,
+    location: false,
+    organizationType: false,
   });
 
   const handleInputChange = (field: string, value: string) => {
@@ -108,6 +127,29 @@ const Outreach = () => {
     { label: "Show 41–50", value: "40" },
   ];
 
+  const designationOptions = [
+    "CEO", "CTO", "Founders", "Co-founder", "AI Engineers", "Digital Marketing", 
+    "Freelancers", "Event Planners", "Marketing Manager", "Software Engineer", 
+    "Product Manager", "Sales Manager", "HR Manager", "Business Development"
+  ];
+
+  const industryOptions = [
+    "Information Technology", "Travel", "Healthcare", "Finance", "Automobile", 
+    "Malls", "E-commerce", "Education", "Real Estate", "Manufacturing", 
+    "Consulting", "Media & Entertainment"
+  ];
+
+  const locationOptions = [
+    "Mumbai", "Delhi", "Bangalore", "Chennai", "Kolkata", "Hyderabad", "Pune", 
+    "Ahmedabad", "Jaipur", "Surat", "Lucknow", "Kanpur", "Nagpur", "UAE", 
+    "Saudi Arabia", "Kuwait", "Qatar", "Bahrain", "Oman", "Remote"
+  ];
+
+  const organizationTypeOptions = [
+    "SME's", "Mid Size Company", "Enterprise", "MNC's", "Startup's", 
+    "Non-profit", "Government", "Educational Institution"
+  ];
+
   return (
     <AnimatedBackground>
       <Navbar />
@@ -162,32 +204,53 @@ const Outreach = () => {
                         <Target className="h-4 w-4" />
                         <span>Job Title / Designation</span>
                       </Label>
-                      <Select
-                        value={formData.designation}
-                        onValueChange={(value) =>
-                          handleInputChange("designation", value)
+                      <Popover 
+                        open={openPopovers.designation} 
+                        onOpenChange={(open) => 
+                          setOpenPopovers(prev => ({ ...prev, designation: open }))
                         }
                       >
-                        <SelectTrigger className="bg-input border-border focus:ring-primary">
-                          <SelectValue placeholder="Select designation" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
-                          <SelectItem value="CEO">CEO</SelectItem>
-                          <SelectItem value="CTO">CTO</SelectItem>
-                          <SelectItem value="Founders">Founders</SelectItem>
-                          <SelectItem value="Co-founder">Co-founder</SelectItem>
-                          <SelectItem value="AI Engineers">AI Engineers</SelectItem>
-                          <SelectItem value="Digital Marketing">Digital Marketing</SelectItem>
-                          <SelectItem value="Freelancers">Freelancers</SelectItem>
-                          <SelectItem value="Event Planners">Event Planners</SelectItem>
-                          <SelectItem value="Marketing Manager">Marketing Manager</SelectItem>
-                          <SelectItem value="Software Engineer">Software Engineer</SelectItem>
-                          <SelectItem value="Product Manager">Product Manager</SelectItem>
-                          <SelectItem value="Sales Manager">Sales Manager</SelectItem>
-                          <SelectItem value="HR Manager">HR Manager</SelectItem>
-                          <SelectItem value="Business Development">Business Development</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPopovers.designation}
+                            className="w-full justify-between bg-input border-border focus:ring-primary"
+                          >
+                            {formData.designation || "Select or type designation..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0 bg-popover border-border">
+                          <Command>
+                            <CommandInput 
+                              placeholder="Search or type designation..." 
+                              value={formData.designation}
+                              onValueChange={(value) => handleInputChange("designation", value)}
+                            />
+                            <CommandEmpty>Type to add custom designation</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {designationOptions.map((option) => (
+                                <CommandItem
+                                  key={option}
+                                  value={option}
+                                  onSelect={(currentValue) => {
+                                    handleInputChange("designation", currentValue);
+                                    setOpenPopovers(prev => ({ ...prev, designation: false }));
+                                  }}
+                                >
+                                  <Check
+                                    className={`mr-2 h-4 w-4 ${
+                                      formData.designation === option ? "opacity-100" : "opacity-0"
+                                    }`}
+                                  />
+                                  {option}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </div>
 
                      <div className="space-y-2">
@@ -198,30 +261,53 @@ const Outreach = () => {
                         <Building className="h-4 w-4" />
                         <span>Industry</span>
                       </Label>
-                      <Select
-                        value={formData.industry}
-                        onValueChange={(value) =>
-                          handleInputChange("industry", value)
+                      <Popover 
+                        open={openPopovers.industry} 
+                        onOpenChange={(open) => 
+                          setOpenPopovers(prev => ({ ...prev, industry: open }))
                         }
                       >
-                        <SelectTrigger className="bg-input border-border focus:ring-primary">
-                          <SelectValue placeholder="Select industry" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
-                          <SelectItem value="Information Technology">Information Technology</SelectItem>
-                          <SelectItem value="Travel">Travel</SelectItem>
-                          <SelectItem value="Healthcare">Healthcare</SelectItem>
-                          <SelectItem value="Finance">Finance</SelectItem>
-                          <SelectItem value="Automobile">Automobile</SelectItem>
-                          <SelectItem value="Malls">Malls</SelectItem>
-                          <SelectItem value="E-commerce">E-commerce</SelectItem>
-                          <SelectItem value="Education">Education</SelectItem>
-                          <SelectItem value="Real Estate">Real Estate</SelectItem>
-                          <SelectItem value="Manufacturing">Manufacturing</SelectItem>
-                          <SelectItem value="Consulting">Consulting</SelectItem>
-                          <SelectItem value="Media & Entertainment">Media & Entertainment</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPopovers.industry}
+                            className="w-full justify-between bg-input border-border focus:ring-primary"
+                          >
+                            {formData.industry || "Select or type industry..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0 bg-popover border-border">
+                          <Command>
+                            <CommandInput 
+                              placeholder="Search or type industry..." 
+                              value={formData.industry}
+                              onValueChange={(value) => handleInputChange("industry", value)}
+                            />
+                            <CommandEmpty>Type to add custom industry</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {industryOptions.map((option) => (
+                                <CommandItem
+                                  key={option}
+                                  value={option}
+                                  onSelect={(currentValue) => {
+                                    handleInputChange("industry", currentValue);
+                                    setOpenPopovers(prev => ({ ...prev, industry: false }));
+                                  }}
+                                >
+                                  <Check
+                                    className={`mr-2 h-4 w-4 ${
+                                      formData.industry === option ? "opacity-100" : "opacity-0"
+                                    }`}
+                                  />
+                                  {option}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
 
@@ -234,38 +320,53 @@ const Outreach = () => {
                         <MapPin className="h-4 w-4" />
                         <span>Location</span>
                       </Label>
-                      <Select
-                        value={formData.location}
-                        onValueChange={(value) =>
-                          handleInputChange("location", value)
+                      <Popover 
+                        open={openPopovers.location} 
+                        onOpenChange={(open) => 
+                          setOpenPopovers(prev => ({ ...prev, location: open }))
                         }
                       >
-                        <SelectTrigger className="bg-input border-border focus:ring-primary">
-                          <SelectValue placeholder="Select location" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
-                          <SelectItem value="Mumbai">Mumbai</SelectItem>
-                          <SelectItem value="Delhi">Delhi</SelectItem>
-                          <SelectItem value="Bangalore">Bangalore</SelectItem>
-                          <SelectItem value="Chennai">Chennai</SelectItem>
-                          <SelectItem value="Kolkata">Kolkata</SelectItem>
-                          <SelectItem value="Hyderabad">Hyderabad</SelectItem>
-                          <SelectItem value="Pune">Pune</SelectItem>
-                          <SelectItem value="Ahmedabad">Ahmedabad</SelectItem>
-                          <SelectItem value="Jaipur">Jaipur</SelectItem>
-                          <SelectItem value="Surat">Surat</SelectItem>
-                          <SelectItem value="Lucknow">Lucknow</SelectItem>
-                          <SelectItem value="Kanpur">Kanpur</SelectItem>
-                          <SelectItem value="Nagpur">Nagpur</SelectItem>
-                          <SelectItem value="UAE">UAE</SelectItem>
-                          <SelectItem value="Saudi Arabia">Saudi Arabia</SelectItem>
-                          <SelectItem value="Kuwait">Kuwait</SelectItem>
-                          <SelectItem value="Qatar">Qatar</SelectItem>
-                          <SelectItem value="Bahrain">Bahrain</SelectItem>
-                          <SelectItem value="Oman">Oman</SelectItem>
-                          <SelectItem value="Remote">Remote</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPopovers.location}
+                            className="w-full justify-between bg-input border-border focus:ring-primary"
+                          >
+                            {formData.location || "Select or type location..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0 bg-popover border-border">
+                          <Command>
+                            <CommandInput 
+                              placeholder="Search or type location..." 
+                              value={formData.location}
+                              onValueChange={(value) => handleInputChange("location", value)}
+                            />
+                            <CommandEmpty>Type to add custom location</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {locationOptions.map((option) => (
+                                <CommandItem
+                                  key={option}
+                                  value={option}
+                                  onSelect={(currentValue) => {
+                                    handleInputChange("location", currentValue);
+                                    setOpenPopovers(prev => ({ ...prev, location: false }));
+                                  }}
+                                >
+                                  <Check
+                                    className={`mr-2 h-4 w-4 ${
+                                      formData.location === option ? "opacity-100" : "opacity-0"
+                                    }`}
+                                  />
+                                  {option}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </div>
 
                      <div className="space-y-2">
@@ -276,26 +377,53 @@ const Outreach = () => {
                         <Building className="h-4 w-4" />
                         <span>Organization Type</span>
                       </Label>
-                      <Select
-                        value={formData.organizationType}
-                        onValueChange={(value) =>
-                          handleInputChange("organizationType", value)
+                      <Popover 
+                        open={openPopovers.organizationType} 
+                        onOpenChange={(open) => 
+                          setOpenPopovers(prev => ({ ...prev, organizationType: open }))
                         }
                       >
-                        <SelectTrigger className="bg-input border-border focus:ring-primary">
-                          <SelectValue placeholder="Select organization type" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
-                          <SelectItem value="SME's">SME's</SelectItem>
-                          <SelectItem value="Mid Size Company">Mid Size Company</SelectItem>
-                          <SelectItem value="Enterprise">Enterprise</SelectItem>
-                          <SelectItem value="MNC's">MNC's</SelectItem>
-                          <SelectItem value="Startup's">Startup's</SelectItem>
-                          <SelectItem value="Non-profit">Non-profit</SelectItem>
-                          <SelectItem value="Government">Government</SelectItem>
-                          <SelectItem value="Educational Institution">Educational Institution</SelectItem>
-                        </SelectContent>
-                      </Select>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant="outline"
+                            role="combobox"
+                            aria-expanded={openPopovers.organizationType}
+                            className="w-full justify-between bg-input border-border focus:ring-primary"
+                          >
+                            {formData.organizationType || "Select or type organization type..."}
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-full p-0 bg-popover border-border">
+                          <Command>
+                            <CommandInput 
+                              placeholder="Search or type organization type..." 
+                              value={formData.organizationType}
+                              onValueChange={(value) => handleInputChange("organizationType", value)}
+                            />
+                            <CommandEmpty>Type to add custom organization type</CommandEmpty>
+                            <CommandGroup className="max-h-60 overflow-y-auto">
+                              {organizationTypeOptions.map((option) => (
+                                <CommandItem
+                                  key={option}
+                                  value={option}
+                                  onSelect={(currentValue) => {
+                                    handleInputChange("organizationType", currentValue);
+                                    setOpenPopovers(prev => ({ ...prev, organizationType: false }));
+                                  }}
+                                >
+                                  <Check
+                                    className={`mr-2 h-4 w-4 ${
+                                      formData.organizationType === option ? "opacity-100" : "opacity-0"
+                                    }`}
+                                  />
+                                  {option}
+                                </CommandItem>
+                              ))}
+                            </CommandGroup>
+                          </Command>
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
 
