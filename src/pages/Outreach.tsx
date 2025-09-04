@@ -154,7 +154,7 @@ const Outreach = () => {
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
+                     <div className="space-y-2">
                       <Label
                         htmlFor="designation"
                         className="flex items-center space-x-2"
@@ -162,20 +162,35 @@ const Outreach = () => {
                         <Target className="h-4 w-4" />
                         <span>Job Title / Designation</span>
                       </Label>
-                      <Input
-                        id="designation"
-                        type="text"
-                        placeholder="e.g., CEO, Marketing Manager, Software Engineer"
-                        className="bg-input border-border focus:ring-primary"
+                      <Select
                         value={formData.designation}
-                        onChange={(e) =>
-                          handleInputChange("designation", e.target.value)
+                        onValueChange={(value) =>
+                          handleInputChange("designation", value)
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger className="bg-input border-border focus:ring-primary">
+                          <SelectValue placeholder="Select designation" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
+                          <SelectItem value="CEO">CEO</SelectItem>
+                          <SelectItem value="CTO">CTO</SelectItem>
+                          <SelectItem value="Founders">Founders</SelectItem>
+                          <SelectItem value="Co-founder">Co-founder</SelectItem>
+                          <SelectItem value="AI Engineers">AI Engineers</SelectItem>
+                          <SelectItem value="Digital Marketing">Digital Marketing</SelectItem>
+                          <SelectItem value="Freelancers">Freelancers</SelectItem>
+                          <SelectItem value="Event Planners">Event Planners</SelectItem>
+                          <SelectItem value="Marketing Manager">Marketing Manager</SelectItem>
+                          <SelectItem value="Software Engineer">Software Engineer</SelectItem>
+                          <SelectItem value="Product Manager">Product Manager</SelectItem>
+                          <SelectItem value="Sales Manager">Sales Manager</SelectItem>
+                          <SelectItem value="HR Manager">HR Manager</SelectItem>
+                          <SelectItem value="Business Development">Business Development</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
-                    <div className="space-y-2">
+                     <div className="space-y-2">
                       <Label
                         htmlFor="industry"
                         className="flex items-center space-x-2"
@@ -183,22 +198,35 @@ const Outreach = () => {
                         <Building className="h-4 w-4" />
                         <span>Industry</span>
                       </Label>
-                      <Input
-                        id="industry"
-                        type="text"
-                        placeholder="e.g., Technology, Healthcare, Finance"
-                        className="bg-input border-border focus:ring-primary"
+                      <Select
                         value={formData.industry}
-                        onChange={(e) =>
-                          handleInputChange("industry", e.target.value)
+                        onValueChange={(value) =>
+                          handleInputChange("industry", value)
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger className="bg-input border-border focus:ring-primary">
+                          <SelectValue placeholder="Select industry" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
+                          <SelectItem value="Information Technology">Information Technology</SelectItem>
+                          <SelectItem value="Travel">Travel</SelectItem>
+                          <SelectItem value="Healthcare">Healthcare</SelectItem>
+                          <SelectItem value="Finance">Finance</SelectItem>
+                          <SelectItem value="Automobile">Automobile</SelectItem>
+                          <SelectItem value="Malls">Malls</SelectItem>
+                          <SelectItem value="E-commerce">E-commerce</SelectItem>
+                          <SelectItem value="Education">Education</SelectItem>
+                          <SelectItem value="Real Estate">Real Estate</SelectItem>
+                          <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                          <SelectItem value="Consulting">Consulting</SelectItem>
+                          <SelectItem value="Media & Entertainment">Media & Entertainment</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
                   <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
+                     <div className="space-y-2">
                       <Label
                         htmlFor="location"
                         className="flex items-center space-x-2"
@@ -206,20 +234,41 @@ const Outreach = () => {
                         <MapPin className="h-4 w-4" />
                         <span>Location</span>
                       </Label>
-                      <Input
-                        id="location"
-                        type="text"
-                        placeholder="e.g., San Francisco, New York, Remote"
-                        className="bg-input border-border focus:ring-primary"
+                      <Select
                         value={formData.location}
-                        onChange={(e) =>
-                          handleInputChange("location", e.target.value)
+                        onValueChange={(value) =>
+                          handleInputChange("location", value)
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger className="bg-input border-border focus:ring-primary">
+                          <SelectValue placeholder="Select location" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
+                          <SelectItem value="Mumbai">Mumbai</SelectItem>
+                          <SelectItem value="Delhi">Delhi</SelectItem>
+                          <SelectItem value="Bangalore">Bangalore</SelectItem>
+                          <SelectItem value="Chennai">Chennai</SelectItem>
+                          <SelectItem value="Kolkata">Kolkata</SelectItem>
+                          <SelectItem value="Hyderabad">Hyderabad</SelectItem>
+                          <SelectItem value="Pune">Pune</SelectItem>
+                          <SelectItem value="Ahmedabad">Ahmedabad</SelectItem>
+                          <SelectItem value="Jaipur">Jaipur</SelectItem>
+                          <SelectItem value="Surat">Surat</SelectItem>
+                          <SelectItem value="Lucknow">Lucknow</SelectItem>
+                          <SelectItem value="Kanpur">Kanpur</SelectItem>
+                          <SelectItem value="Nagpur">Nagpur</SelectItem>
+                          <SelectItem value="UAE">UAE</SelectItem>
+                          <SelectItem value="Saudi Arabia">Saudi Arabia</SelectItem>
+                          <SelectItem value="Kuwait">Kuwait</SelectItem>
+                          <SelectItem value="Qatar">Qatar</SelectItem>
+                          <SelectItem value="Bahrain">Bahrain</SelectItem>
+                          <SelectItem value="Oman">Oman</SelectItem>
+                          <SelectItem value="Remote">Remote</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
 
-                    <div className="space-y-2">
+                     <div className="space-y-2">
                       <Label
                         htmlFor="organizationType"
                         className="flex items-center space-x-2"
@@ -227,17 +276,26 @@ const Outreach = () => {
                         <Building className="h-4 w-4" />
                         <span>Organization Type</span>
                       </Label>
-                      <Input
-                        id="organizationType"
-                        type="text"
-                        placeholder="e.g., Startup, Enterprise, Non-profit"
-                        className="bg-input border-border focus:ring-primary"
+                      <Select
                         value={formData.organizationType}
-                        onChange={(e) =>
-                          handleInputChange("organizationType", e.target.value)
+                        onValueChange={(value) =>
+                          handleInputChange("organizationType", value)
                         }
-                        required
-                      />
+                      >
+                        <SelectTrigger className="bg-input border-border focus:ring-primary">
+                          <SelectValue placeholder="Select organization type" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-popover border-border max-h-60 overflow-y-auto">
+                          <SelectItem value="SME's">SME's</SelectItem>
+                          <SelectItem value="Mid Size Company">Mid Size Company</SelectItem>
+                          <SelectItem value="Enterprise">Enterprise</SelectItem>
+                          <SelectItem value="MNC's">MNC's</SelectItem>
+                          <SelectItem value="Startup's">Startup's</SelectItem>
+                          <SelectItem value="Non-profit">Non-profit</SelectItem>
+                          <SelectItem value="Government">Government</SelectItem>
+                          <SelectItem value="Educational Institution">Educational Institution</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
 
