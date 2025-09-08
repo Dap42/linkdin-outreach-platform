@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -9,16 +9,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AnimatedBackground } from "@/components/ui/animated-background";
 import { Navbar } from "@/components/ui/navbar";
 import {
   Users,
   ExternalLink,
-  RefreshCw, // Added RefreshCw
+  RefreshCw,
   Download,
   Eye,
   EyeOff,
   ArrowLeft,
+  ArrowUpDown,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { DelayedResultsLoader } from "@/components/DelayedResultsLoader"; // Import the new loader
@@ -34,16 +42,24 @@ interface Prospect {
 const Results = () => {
   const location = useLocation();
   const { toast } = useToast();
-  const [expandedCards, setExpandedCards] = useState<Set<number>>(new Set());
+  const [expandedCards, setExpandedCards] = useState<Set<string>>(new Set());
+  const [sortOrder, setSortOrder] = useState<'endFirst' | 'startFirst'>(() => {
+    return (localStorage.getItem('resultsSortOrder') as 'endFirst' | 'startFirst') || 'endFirst';
+  });
 
   const formData = location.state?.formData || {};
 
-  const toggleExpand = (index: number) => {
+  // Save sort preference to localStorage
+  useEffect(() => {
+    localStorage.setItem('resultsSortOrder', sortOrder);
+  }, [sortOrder]);
+
+  const toggleExpand = (prospectId: string) => {
     const newExpanded = new Set(expandedCards);
-    if (newExpanded.has(index)) {
-      newExpanded.delete(index);
+    if (newExpanded.has(prospectId)) {
+      newExpanded.delete(prospectId);
     } else {
-      newExpanded.add(index);
+      newExpanded.add(prospectId);
     }
     setExpandedCards(newExpanded);
   };
@@ -91,57 +107,80 @@ const Results = () => {
           </motion.div>
 
           <DelayedResultsLoader formData={formData}>
-            {(prospects, isLoading, refetch) => (
+            {(prospects, isLoading, refetch) => {
+              // Create displayed prospects based on sort order
+              const displayedProspects = sortOrder === 'endFirst' 
+                ? [...prospects].reverse() 
+                : prospects;
+
+              return (
               <>
-                <div className="flex items-center space-x-3 mb-6">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={refetch}
-                    disabled={isLoading}
-                  >
-                    <RefreshCw
-                      className={`h-4 w-4 mr-2 ${
-                        isLoading ? "animate-spin" : ""
-                      }`}
-                    />
-                    Refresh
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      // handleExportData logic here, using the 'prospects' from the loader
-                      const csvData = prospects.map((p) => ({
-                        Name: p.Name,
-                        Title: p.Title,
-                        LinkedIn: p.Linked_url,
-                        About: p.About.replace(/,/g, ";"), // Replace commas to avoid CSV issues
-                      }));
+                <div className="flex items-center justify-between mb-6">
+                  <div className="flex items-center space-x-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={refetch}
+                      disabled={isLoading}
+                    >
+                      <RefreshCw
+                        className={`h-4 w-4 mr-2 ${
+                          isLoading ? "animate-spin" : ""
+                        }`}
+                      />
+                      Refresh
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        const csvData = displayedProspects.map((p) => ({
+                          Name: p.Name || '',
+                          Title: p.Title || '',
+                          LinkedIn: p.Linked_url || '',
+                          About: (p.About || '').replace(/,/g, ";"),
+                        }));
 
-                      const csvContent =
-                        "data:text/csv;charset=utf-8," +
-                        "Name,Title,LinkedIn,About\n" +
-                        csvData
-                          .map(
-                            (row) =>
-                              `"${row.Name}","${row.Title}","${row.LinkedIn}","${row.About}"`
-                          )
-                          .join("\n");
+                        const csvContent =
+                          "data:text/csv;charset=utf-8," +
+                          "Name,Title,LinkedIn,About\n" +
+                          csvData
+                            .map(
+                              (row) =>
+                                `"${row.Name}","${row.Title}","${row.LinkedIn}","${row.About}"`
+                            )
+                            .join("\n");
 
-                      const encodedUri = encodeURI(csvContent);
-                      const link = document.createElement("a");
-                      link.setAttribute("href", encodedUri);
-                      link.setAttribute("download", "prospects.csv");
-                      document.body.appendChild(link);
-                      link.click();
-                      document.body.removeChild(link);
-                    }}
-                    disabled={prospects.length === 0}
-                  >
-                    <Download className="h-4 w-4 mr-2" />
-                    Export CSV
-                  </Button>
+                        const encodedUri = encodeURI(csvContent);
+                        const link = document.createElement("a");
+                        link.setAttribute("href", encodedUri);
+                        link.setAttribute("download", "prospects.csv");
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                      }}
+                      disabled={prospects.length === 0}
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Export CSV
+                    </Button>
+                  </div>
+                  
+                  <div className="flex items-center space-x-2">
+                    <span className="text-sm text-muted-foreground">
+                      {prospects.length} results
+                    </span>
+                    <Select value={sortOrder} onValueChange={(value: 'endFirst' | 'startFirst') => setSortOrder(value)}>
+                      <SelectTrigger className="w-[140px]">
+                        <ArrowUpDown className="h-4 w-4 mr-2" />
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="endFirst">Newest first</SelectItem>
+                        <SelectItem value="startFirst">Oldest first</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {prospects.length === 0 && !isLoading ? (
@@ -171,13 +210,15 @@ const Results = () => {
                   </motion.div>
                 ) : (
                   <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {prospects.map((prospect, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.1 }}
-                      >
+                    {displayedProspects.map((prospect, index) => {
+                      const prospectId = prospect.Linked_url || prospect.Name || `prospect-${index}`;
+                      return (
+                        <motion.div
+                          key={prospectId}
+                          initial={{ opacity: 0, y: 30 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                        >
                         <Card className="gradient-card shadow-card border-border/50 hover:shadow-glow transition-smooth h-full min-h-[350px]">
                           {" "}
                           {/* Added min-h for consistent card height */}
@@ -206,16 +247,16 @@ const Results = () => {
                           <CardContent className="space-y-4">
                             <div>
                               <p className="text-sm text-muted-foreground leading-relaxed">
-                                {expandedCards.has(index)
-                                  ? prospect.About
-                                  : truncateText(prospect.About)}
+                                {expandedCards.has(prospectId)
+                                  ? (prospect.About || 'No description available.')
+                                  : truncateText(prospect.About || 'No description available.')}
                               </p>
-                              {prospect.About.length > 150 && (
+                              {(prospect.About || '').length > 150 && (
                                 <button
-                                  onClick={() => toggleExpand(index)}
+                                  onClick={() => toggleExpand(prospectId)}
                                   className="text-primary hover:text-primary/80 text-sm mt-2 flex items-center space-x-1 transition-smooth"
                                 >
-                                  {expandedCards.has(index) ? (
+                                  {expandedCards.has(prospectId) ? (
                                     <>
                                       <EyeOff className="h-3 w-3" />
                                       <span>Show less</span>
@@ -248,11 +289,13 @@ const Results = () => {
                           </CardContent>
                         </Card>
                       </motion.div>
-                    ))}
+                      );
+                    })}
                   </div>
                 )}
               </>
-            )}
+              );
+            }}
           </DelayedResultsLoader>
         </div>
       </div>
